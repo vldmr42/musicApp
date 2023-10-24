@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TrackModule } from './track/track.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { config } from 'dotenv';
 
-console.log(process.env.MONGO);
+config();
+
 @Module({
-    imports: [
-        MongooseModule.forRoot(
-            'mongodb://mongo:DxRjlM6TMDRfTjgwCqJ7@containers-us-west-87.railway.app:7113',
-        ),
-        TrackModule,
-    ],
+    imports: [MongooseModule.forRoot(process.env.MONGO), TrackModule],
 })
 export class AppModule {}

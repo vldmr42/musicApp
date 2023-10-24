@@ -5,6 +5,7 @@ import { Model, ObjectId } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateTrackDto } from './dto/create-track.dto';
 import * as mongoose from 'mongoose';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class TrackService {
@@ -21,11 +22,19 @@ export class TrackService {
         return tracks;
     }
     async getOne(id: ObjectId): Promise<Track> {
-        const track = await this.trackModel.findById(id);
+        const track = (await this.trackModel.findById(id)).populate('comments');
         return track;
     }
     async delete(id: ObjectId): Promise<mongoose.Types.ObjectId> {
         const track = await this.trackModel.findByIdAndDelete(id);
         return track._id;
+    }
+
+    async addComment(dto: CreateCommentDto): Promise<Comment> {
+        const track = await this.trackModel.findById(dto.trackId);
+        const comment = await this.commentModel.create({ ...dto });
+        track.comments.push(comment._id);
+        await track.save();
+        return comment;
     }
 }
