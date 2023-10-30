@@ -1,4 +1,4 @@
-import { Injectable, Query } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Track, TrackDocument } from './schemas/track.schema';
 import { Model, ObjectId } from 'mongoose';
@@ -25,7 +25,12 @@ export class TrackService {
             FileType.IMAGE,
             picture,
         );
-        const track = await this.trackModel.create({ ...dto, listens: 0 });
+        const track = await this.trackModel.create({
+            ...dto,
+            listens: 0,
+            audio: audioPath,
+            picture: picturePath,
+        });
         return track;
     }
     async getAll(count: number = 10, offset: number = 0): Promise<Track[]> {
