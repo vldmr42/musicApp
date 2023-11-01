@@ -20,7 +20,9 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
             className={styles.track}
             onClick={() => router.push('/tracks/' + track._id)}
         >
-            <IconButton>{active ? <Pause /> : <PlayArrow />}</IconButton>
+            <IconButton onClick={(e) => e.stopPropagation()}>
+                {active ? <Pause /> : <PlayArrow />}
+            </IconButton>
             <Image
                 width={70}
                 height={70}
@@ -38,7 +40,10 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
                 </div>
             </Grid>
             {active && <div>02:42 / 03:22</div>}
-            <IconButton style={{ marginLeft: 'auto' }}>
+            <IconButton
+                onClick={(e) => e.stopPropagation()}
+                style={{ marginLeft: 'auto' }}
+            >
                 <Delete />
             </IconButton>
         </Card>
