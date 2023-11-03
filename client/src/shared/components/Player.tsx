@@ -5,6 +5,8 @@ import React from 'react';
 import styles from '@/styles/Player.module.scss';
 import { ITrack } from '@/types/track';
 import TrackProgress from './TrackProgress';
+import { useTypedSelector } from '../hooks/useTypedSelector';
+import { useActions } from '../hooks/useActions';
 
 const Player = () => {
     const track: ITrack = {
@@ -17,11 +19,22 @@ const Player = () => {
         audio: 'audio/db04950d-b985-468f-86f5-ddfbb63233d5.mp3',
         comments: [],
     };
-    const active = false;
+    const { active, currentTime, duration, pause, volume } = useTypedSelector(
+        (state) => state.player
+    );
+    const { pauseTrack, playTrack } = useActions();
+
+    const play = () => {
+        if (pause) {
+            playTrack();
+        } else {
+            pauseTrack();
+        }
+    };
     return (
         <div className={styles.player}>
-            <IconButton onClick={(e) => e.stopPropagation()}>
-                {active ? <Pause /> : <PlayArrow />}
+            <IconButton onClick={play}>
+                {!pause ? <Pause /> : <PlayArrow />}
             </IconButton>
             <Grid
                 container
