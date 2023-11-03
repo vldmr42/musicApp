@@ -1,6 +1,9 @@
 import TrackList from '@/shared/components/TrackList';
 import { useActions } from '@/shared/hooks/useActions';
+import { useTypedSelector } from '@/shared/hooks/useTypedSelector';
 import MainLayout from '@/shared/layouts/MainLayout';
+import { NextThunkDispatch, wrapper } from '@/store';
+import { fetchTracks } from '@/store/action-creators/track';
 import { ITrack } from '@/types/track';
 import { Box, Button, Card, Grid } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -8,28 +11,15 @@ import React from 'react';
 
 const Tracks = () => {
     const router = useRouter();
-    const tracks: ITrack[] = [
-        {
-            _id: '1',
-            name: 'club4',
-            artist: 'art1',
-            text: 'txt',
-            listens: 0,
-            picture: 'image/76e93185-e42b-42a5-a09b-4bcc6c254610.jpg',
-            audio: 'audio/db04950d-b985-468f-86f5-ddfbb63233d5.mp3',
-            comments: [],
-        },
-        {
-            _id: '2',
-            name: 'club5',
-            artist: 'art1',
-            text: 'txt',
-            listens: 0,
-            picture: 'image/d53000e4-cf2c-462e-865d-920bcb28ee77.jpg',
-            audio: 'audio/48acd747-6d4d-4311-8595-19ef894e0c4b.mp3',
-            comments: [],
-        },
-    ];
+    const { tracks, error } = useTypedSelector((state) => state.tracks);
+
+    if (error) {
+        return (
+            <MainLayout>
+                <h1>{error}</h1>
+            </MainLayout>
+        );
+    }
 
     return (
         <MainLayout>
@@ -53,3 +43,16 @@ const Tracks = () => {
 };
 
 export default Tracks;
+
+// export const getServerSideProps = wrapper.getServerSideProps(async (store) => {
+//     const dispatch = store.dispatch as NextThunkDispatch;
+//     await dispatch(await fetchTracks());
+// });
+
+export const getServerSideProps = wrapper.getServerSideProps((store) =>
+    // @ts-expect-error type-error
+    async ({ req, res, ...etc }) => {
+        const dispatch = store.dispatch as NextThunkDispatch;
+        await dispatch(await fetchTracks());
+    }
+);

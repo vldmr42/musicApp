@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import { HYDRATE } from 'next-redux-wrapper';
 import { playerReducer } from './playerReducer';
+import { trackReducer } from './trackReducer';
 
 const rootReducer = combineReducers({
     player: playerReducer,
+    tracks: trackReducer,
 });
 
 // @ts-expect-error explicit any
