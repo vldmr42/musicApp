@@ -3,15 +3,31 @@ import { useActions } from '@/shared/hooks/useActions';
 import { useTypedSelector } from '@/shared/hooks/useTypedSelector';
 import MainLayout from '@/shared/layouts/MainLayout';
 import { NextThunkDispatch, wrapper } from '@/store';
-import { fetchTracks } from '@/store/action-creators/track';
+import { fetchTracks, searchTracks } from '@/store/action-creators/track';
 import { ITrack } from '@/types/track';
-import { Box, Button, Card, Grid } from '@mui/material';
+import { Box, Button, Card, Grid, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const Tracks = () => {
     const router = useRouter();
     const { tracks, error } = useTypedSelector((state) => state.tracks);
+    const dispatch = useDispatch() as NextThunkDispatch;
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+
+    const [query, setQuery] = useState('');
+    const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+        if (timer) {
+            clearTimeout(timer);
+        }
+        setTimer(
+            setTimeout(async () => {
+                await dispatch(await searchTracks(e.target.value));
+            }, 500)
+        );
+    };
 
     if (error) {
         return (
@@ -35,6 +51,7 @@ const Tracks = () => {
                             </Button>
                         </Grid>
                     </Box>
+                    <TextField fullWidth value={query} onChange={search} />
                     <TrackList tracks={tracks} />
                 </Card>
             </Grid>
