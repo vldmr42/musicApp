@@ -1,6 +1,5 @@
 import { useInput } from '@/shared/hooks/useInput';
 import MainLayout from '@/shared/layouts/MainLayout';
-import { wrapper } from '@/store';
 import { IComment, ITrack } from '@/types/track';
 import { Button, Grid, TextField } from '@mui/material';
 import axios from 'axios';
@@ -39,7 +38,7 @@ const TrackPage = ({ serverTrack }: TrackPageProps) => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout title={`Music App - ${track.artist} - ${track.name}`}>
             <Button
                 variant="outlined"
                 style={{ fontSize: 32 }}
